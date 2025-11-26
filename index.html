@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Leisure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; 
+      }
+
+      /* Dot Pattern Background */
+      .bg-dot-pattern {
+        background-color: #f8fafc;
+        background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes widthGrow {
+        from { width: 0; }
+        to { width: 100%; } /* Overridden by inline style width */
+      }
+
+      .animate-fadeInUp {
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      
+      .delay-100 { animation-delay: 100ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-300 { animation-delay: 300ms; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans h-screen overflow-hidden flex text-slate-900">
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-toggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-slate-900 text-white rounded-lg shadow-lg hover:bg-slate-800 transition-colors">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-30 md:hidden hidden transition-opacity" onclick="toggleMobileMenu()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-80 bg-[#0f172a] text-white flex flex-col h-full shadow-2xl border-r border-slate-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        
+        <!-- Texture & Background Effects -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/40 via-[#0f172a] to-[#0f172a] pointer-events-none"></div>
+        <div class="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none mix-blend-overlay"></div>
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header -->
+        <div class="p-8 pb-6 flex items-center gap-4 relative z-10 animate-fadeInUp">
+            <div class="p-2.5 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-900/40 group">
+                <i data-lucide="layers" class="text-white w-6 h-6 group-hover:scale-110 transition-transform"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-xl tracking-tight text-white leading-tight">Team Leisure</h1>
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">Corporate Directory</p>
+            </div>
+        </div>
+
+        <!-- Navigation List -->
+        <div class="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-slate-700 relative z-10 px-4 space-y-6">
+            
+            <!-- Main Menu -->
+            <div class="space-y-2">
+                <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 animate-fadeInUp delay-100">Main Menu</p>
+                <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden text-slate-400 hover:bg-white/5 hover:text-white border border-transparent">
+                    <div class="active-indicator absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-[0_0_15px_rgba(99,102,241,0.6)] transition-all duration-300 opacity-0 scale-y-0"></div>
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 nav-icon"></i>
+                    <span class="font-medium">Dashboard</span>
+                </button>
+            </div>
+
+            <!-- Team List -->
+            <div class="space-y-2" id="team-list-container">
+                <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 animate-fadeInUp delay-200">Team Members</p>
+                <!-- Team members injected via JS -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 border-t border-slate-800/50 relative z-10 animate-fadeInUp delay-300">
+            <div class="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-900/50 text-slate-500 text-xs font-medium border border-slate-800/50 cursor-not-allowed opacity-80">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                <span>Guest Viewonly</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="flex-1 relative w-full h-full overflow-hidden md:ml-80">
+        <!-- Views injected via JS -->
+    </main>
+
+    <script>
+        // --- DATA ---
+        const TEAM_MEMBERS = [
+            {
+                id: '1',
+                name: "Duro. Kaith Marky",
+                role: "Senior Developer",
+                avatarUrl: "./duro.png",
+                email: "k.duro@teamleisure.com",
+                bio: "2nd Year BSIT Student with a strong foundation in modern web development. Currently leading the frontend architecture migration to React 18, applying academic concepts to real-world performance optimization.",
+                skills: [
+                    { name: "React", level: 95, category: "Development" },
+                    { name: "TypeScript", level: 90, category: "Development" },
+                    { name: "Node.js", level: 85, category: "Development" },
+                    { name: "AWS", level: 60, category: "Operations" },
+                    { name: "Docker", level: 75, category: "Operations" },
+                    { name: "GraphQL", level: 85, category: "Development" },
+                    { name: "PostgreSQL", level: 70, category: "Development" }
+                ],
+                experiences: [
+                    { role: "Senior Frontend Lead", company: "Team Leisure", period: "2023 - Present", description: "Leading frontend initiatives and mentoring peer developers while maintaining academic excellence." },
+                    { role: "Junior Web Dev", company: "Freelance", period: "2021 - 2023", description: "Developed responsive websites for local SMEs using HTML, CSS, and JavaScript." }
+                ],
+                education: [
+                    { degree: "B.S. Information Technology", school: "University of Science & Tech", year: "2023 - Present" },
+                    { degree: "Senior High School", school: "Tech Vocational High", year: "2021 - 2023" }
+                ]
+            },
+            {
+                id: '2',
+                name: "Enguerra, Aaron C.",
+                role: "UI Designer",
+                avatarUrl: "./enguerra.png",
+                email: "a.enguerra@teamleisure.com",
+                bio: "2nd Year BSIT Student and creative UI Designer. Combines technical coursework with a natural eye for aesthetics to create intuitive, user-centered mobile and web applications.",
+                skills: [
+                    { name: "Figma", level: 98, category: "Design" },
+                    { name: "Adobe XD", level: 90, category: "Design" },
+                    { name: "UI Prototyping", level: 95, category: "Design" },
+                    { name: "CSS/Tailwind", level: 85, category: "Development" },
+                    { name: "User Research", level: 80, category: "Design" }
+                ],
+                experiences: [
+                    { role: "Lead UI Designer", company: "Team Leisure", period: "2023 - Present", description: "Establishing the design system and visual identity for all team projects." },
+                    { role: "Graphic Design Intern", company: "Creative Studio", period: "2022 - 2023", description: "Assisted in creating marketing assets and web layouts." }
+                ],
+                education: [
+                    { degree: "B.S. Information Technology", school: "University of Science & Tech", year: "2023 - Present" }
+                ]
+            },
+            {
+                id: '3',
+                name: "Marco, Tobey D.",
+                role: "Project Manager",
+                avatarUrl: "./marco.png",
+                email: "t.marco@teamleisure.com",
+                bio: "2nd Year BSIT Student specializing in Agile methodologies and team leadership. Orchestrates project timelines and ensures seamless collaboration between design and development teams.",
+                skills: [
+                    { name: "Agile/Scrum", level: 90, category: "Management" },
+                    { name: "Jira/Trello", level: 95, category: "Management" },
+                    { name: "Communication", level: 95, category: "Soft Skills" },
+                    { name: "Risk Management", level: 80, category: "Management" },
+                    { name: "HTML/CSS", level: 60, category: "Development" }
+                ],
+                experiences: [
+                    { role: "Project Manager", company: "Team Leisure", period: "2023 - Present", description: "Overseeing project lifecycles from requirement gathering to deployment." },
+                    { role: "Student Council Officer", company: "University Student Gov", period: "2023 - 2024", description: "Managed student events and coordinated between faculty and student body." }
+                ],
+                education: [
+                    { degree: "B.S. Information Technology", school: "University of Science & Tech", year: "2023 - Present" }
+                ]
+            },
+            {
+                id: '4',
+                name: "Tenorio, Emmanuel Robert",
+                role: "Game Developer",
+                avatarUrl: "./tenorio.png",
+                email: "Emmanuelroberttenorio.com",
+                bio: "2nd Year BSIT Student with a flair for Games Development. passionate creating application no workexperience but practising and making.",
+                skills: [
+                    { name: "Luau Language", level: 45, category: "Marketing" },
+                    { name: "Content Strategy", level: 60, category: "Marketing" },
+                    { name: "Data Analytics", level: 50, category: "Marketing" },
+                    { name: "Web Developer", level: 90, category: "Marketing" },
+                    { name: "Networking", level: 85, category: "Soft Skills" }
+                ],
+                experiences: [
+                    { role: "Logistics Lazada - Data Encoder", company: "RGS", period: "2023 - Present", description: "Handling and encoding data of goods and products from a platform Lazada." },
+                    { role: "Data Encoder", company: "Fish Tech Company", period: "2023 - Present", description: "Managing social pages and increasing engagement by 150%." }
+                ],
+                education: [
+                    { degree: "B.S. Information Technology", school: "University of Bestlink College Of The Philippines", year: "2023 - Present" }
+                ]
+            },
+            {
+                id: '5',
+                name: "Ombrog, Eugene",
+                role: "System Administrator",
+                avatarUrl: "./ombrog.png",
+                email: "e.ombrog@teamleisure.com",
+                bio: "2nd Year BSIT Student focused on server infrastructure and network security. Ensures system uptime and implements robust security protocols for team deployments.",
+                skills: [
+                    { name: "Linux Administration", level: 90, category: "Operations" },
+                    { name: "Network Security", level: 85, category: "Operations" },
+                    { name: "Bash Scripting", level: 80, category: "Development" },
+                    { name: "Cloud Deployment", level: 75, category: "Operations" },
+                    { name: "Database Mgmt", level: 70, category: "Development" }
+                ],
+                experiences: [
+                    { role: "System Administrator", company: "Team Leisure", period: "2023 - Present", description: "Managing CI/CD pipelines and ensuring server reliability." },
+                    { role: "IT Support Intern", company: "Local ISP", period: "2022 - 2023", description: "Troubleshooted network issues and assisted in hardware maintenance." }
+                ],
+                education: [
+                    { degree: "B.S. Information Technology", school: "University of Science & Tech", year: "2023 - Present" }
+                ]
+            }
+        ];
+
+        // --- STATE ---
+        let currentState = {
+            view: 'dashboard', // 'dashboard' or 'profile'
+            selectedMemberId: null,
+            isMobileOpen: false
+        };
+
+        // --- UTILS ---
+        const handleImageError = (img, name) => {
+            img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=128`;
+        };
+
+        const getCategoryColor = (category) => {
+            switch (category) {
+                case 'Development': return 'bg-blue-500 shadow-blue-500/50';
+                case 'Design': return 'bg-pink-500 shadow-pink-500/50';
+                case 'Management': return 'bg-purple-500 shadow-purple-500/50';
+                case 'Marketing': return 'bg-orange-500 shadow-orange-500/50';
+                case 'Operations': return 'bg-emerald-500 shadow-emerald-500/50';
+                case 'Soft Skills': return 'bg-yellow-500 shadow-yellow-500/50';
+                default: return 'bg-slate-500';
+            }
+        };
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderSidebar() {
+            const container = document.getElementById('team-list-container');
+            
+            // Dashboard Button State
+            const dashboardBtn = document.getElementById('nav-dashboard');
+            const isActiveDash = currentState.view === 'dashboard';
+            
+            dashboardBtn.className = `w-full flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+                isActiveDash 
+                ? 'bg-gradient-to-r from-white/10 to-transparent text-white shadow-lg backdrop-blur-sm border border-white/5' 
+                : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent'
+            }`;
+            dashboardBtn.querySelector('.active-indicator').className = `active-indicator absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-[0_0_15px_rgba(99,102,241,0.6)] transition-all duration-300 ${isActiveDash ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}`;
+            dashboardBtn.querySelector('.nav-icon').className = `w-5 h-5 nav-icon ${isActiveDash ? 'text-indigo-400' : ''}`;
+
+            // Render Team Members
+            container.innerHTML = `
+                <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 animate-fadeInUp delay-200">Team Members</p>
+                ${TEAM_MEMBERS.map((member, index) => {
+                    const isSelected = currentState.view === 'profile' && currentState.selectedMemberId === member.id;
+                    const delay = 200 + (index * 50);
+                    return `
+                        <button
+                            onclick="selectMember('${member.id}')"
+                            style="animation-delay: ${delay}ms"
+                            class="w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden animate-fadeInUp mb-2
+                            ${isSelected 
+                                ? 'bg-gradient-to-r from-white/10 to-transparent text-white shadow-lg backdrop-blur-sm border border-white/5 translate-x-1' 
+                                : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent hover:translate-x-1'
+                            }"
+                        >
+                            <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full shadow-[0_0_15px_rgba(99,102,241,0.6)] transition-all duration-300 ${isSelected ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}"></div>
+                            
+                            <img 
+                                src="${member.avatarUrl}" 
+                                alt="${member.name}" 
+                                onerror="handleImageError(this, '${member.name}')"
+                                class="w-8 h-8 rounded-full object-cover transition-all duration-300 ${isSelected ? 'ring-2 ring-indigo-400 shadow-md scale-105' : 'ring-1 ring-slate-700 grayscale-[0.6] group-hover:grayscale-0 group-hover:ring-slate-500 group-hover:scale-105'}"
+                            />
+                            
+                            <div class="flex-1 min-w-0 text-left">
+                                <p class="font-medium truncate text-sm transition-colors ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-white'}">${member.name}</p>
+                                <p class="text-[10px] truncate transition-colors ${isSelected ? 'text-indigo-300' : 'text-slate-500'}">${member.role}</p>
+                            </div>
+
+                            <i data-lucide="chevron-right" class="w-4 h-4 transition-all duration-300 ${isSelected ? 'translate-x-0 opacity-100 text-indigo-400' : '-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'}"></i>
+                        </button>
+                    `;
+                }).join('')}
+            `;
+            lucide.createIcons();
+        }
+
+        function renderDashboard() {
+            const content = document.getElementById('main-content');
+            
+            // Stats Calculations
+            const totalMembers = TEAM_MEMBERS.length;
+            const totalSkills = TEAM_MEMBERS.reduce((acc, m) => acc + m.skills.length, 0);
+            const avgSkillLevel = Math.round(TEAM_MEMBERS.reduce((acc, m) => acc + m.skills.reduce((sAcc, s) => sAcc + s.level, 0), 0) / totalSkills);
+            
+            const activities = [
+                { user: TEAM_MEMBERS[0].name.split(',')[0], action: "pushed code to", target: "frontend-migration", time: "2h ago" },
+                { user: TEAM_MEMBERS[1].name.split(',')[0], action: "updated design system", target: "Figma Library", time: "4h ago" },
+                { user: TEAM_MEMBERS[2].name.split(',')[0], action: "closed sprint", target: "Sprint 24", time: "1d ago" },
+                { user: TEAM_MEMBERS[3].name.split(',')[0], action: "published post", target: "LinkedIn", time: "1d ago" },
+            ];
+
+            content.innerHTML = `
+                <div class="flex-1 h-full overflow-y-auto bg-dot-pattern p-4 md:p-10 scroll-smooth animate-fadeInUp">
+                    <div class="max-w-6xl mx-auto space-y-8 pb-10">
+                        
+                        <!-- Header -->
+                        <div class="flex flex-col md:flex-row justify-between items-end gap-4 mb-2">
+                            <div>
+                                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Team Dashboard</h1>
+                                <p class="text-slate-500 mt-1">Overview of Team Leisure's performance and roster.</p>
+                            </div>
+                            <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 shadow-sm">
+                                Current Term: <span class="text-indigo-600">BSIT 2nd Year - 2nd Sem</span>
+                            </div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            ${renderStatCard('users', 'bg-blue-600', 'bg-blue-50', 'Team Members', totalMembers)}
+                            ${renderStatCard('zap', 'bg-amber-600', 'bg-amber-50', 'Total Skills', totalSkills)}
+                            ${renderStatCard('trending-up', 'bg-emerald-600', 'bg-emerald-50', 'Avg. Proficiency', `${avgSkillLevel}%`)}
+                            ${renderStatCard('briefcase', 'bg-purple-600', 'bg-purple-50', 'Active Projects', '3')}
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Main Content -->
+                            <div class="lg:col-span-2 space-y-6">
+                                <!-- Roster -->
+                                <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                                        <i data-lucide="users" class="w-5 h-5 text-indigo-600"></i> Active Roster
+                                    </h3>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        ${TEAM_MEMBERS.map(member => `
+                                            <div onclick="selectMember('${member.id}')" class="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-lg hover:border-indigo-100 hover:-translate-y-1 transition-all cursor-pointer group">
+                                                <img src="${member.avatarUrl}" onerror="handleImageError(this, '${member.name}')" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm group-hover:scale-105 transition-transform" />
+                                                <div class="min-w-0">
+                                                    <h4 class="font-bold text-slate-800 text-sm truncate">${member.name}</h4>
+                                                    <p class="text-xs text-indigo-600 font-medium truncate">${member.role}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <!-- Skills Chart -->
+                                <div class="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                                        <i data-lucide="code" class="w-5 h-5 text-pink-600"></i> Skill Distribution
+                                    </h3>
+                                    <div class="space-y-4">
+                                        ${renderSkillBar('Development (Frontend/Backend)', 45, 'bg-blue-500')}
+                                        ${renderSkillBar('UI/UX Design', 20, 'bg-pink-500')}
+                                        ${renderSkillBar('Project Management', 15, 'bg-purple-500')}
+                                        ${renderSkillBar('Marketing & Operations', 20, 'bg-orange-500')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar Activity -->
+                            <div class="space-y-6">
+                                <div class="bg-slate-900 rounded-3xl p-6 shadow-xl text-white relative overflow-hidden">
+                                    <div class="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
+                                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2 relative z-10">
+                                        <i data-lucide="terminal" class="w-4 h-4 text-green-400"></i> Recent Activity
+                                    </h3>
+                                    <div class="space-y-6 relative z-10">
+                                        ${activities.map(act => `
+                                            <div class="flex gap-3 text-sm">
+                                                <div class="flex flex-col items-center">
+                                                    <div class="w-2 h-2 rounded-full bg-green-500 mb-1"></div>
+                                                    <div class="w-0.5 h-full bg-slate-800"></div>
+                                                </div>
+                                                <div class="pb-2">
+                                                    <p class="text-slate-300"><span class="font-semibold text-white">${act.user}</span> ${act.action} <span class="text-indigo-300">${act.target}</span></p>
+                                                    <p class="text-xs text-slate-500 mt-1">${act.time}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-3xl p-6 shadow-xl text-white relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 -mr-10 -mt-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:bg-white/30 transition-colors"></div>
+                                    <i data-lucide="award" class="w-8 h-8 mb-4 text-yellow-300"></i>
+                                    <h3 class="text-xl font-bold mb-2">Student Excellence</h3>
+                                    <p class="text-indigo-100 text-sm leading-relaxed mb-4">Team Leisure is committed to academic and professional growth as 2nd Year BSIT Students.</p>
+                                    <button class="bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2 px-4 rounded-lg transition-colors border border-white/20 backdrop-blur-sm">View Academic Records</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderProfile(member) {
+            const content = document.getElementById('main-content');
+            
+            content.innerHTML = `
+                <div class="flex-1 h-full overflow-y-auto bg-dot-pattern p-4 md:p-10 scroll-smooth animate-fadeInUp">
+                    <div class="max-w-6xl mx-auto space-y-8 pb-10">
+                        
+                        <!-- Header Card -->
+                        <div class="group bg-white rounded-3xl p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-white ring-1 ring-slate-100 flex flex-col md:flex-row gap-8 items-start animate-fadeInUp hover:shadow-2xl transition-all duration-500">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-indigo-500 rounded-full blur-xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <img src="${member.avatarUrl}" onerror="handleImageError(this, '${member.name}')" class="relative w-36 h-36 rounded-full object-cover border-4 border-white shadow-lg" />
+                            </div>
+                            
+                            <div class="flex-1 space-y-4 pt-2">
+                                <div>
+                                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">${member.name}</h2>
+                                    <p class="text-xl text-indigo-600 font-semibold flex items-center gap-2 mt-1">
+                                        ${member.role}
+                                        <span class="h-1.5 w-1.5 rounded-full bg-indigo-300"></span>
+                                        <span class="text-sm text-slate-400 font-normal">Active</span>
+                                    </p>
+                                </div>
+                                <div class="flex flex-wrap gap-4 pt-2">
+                                    <a href="mailto:${member.email}" class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 border border-slate-100 font-medium text-sm group/btn">
+                                        <i data-lucide="mail" class="w-4 h-4 group-hover/btn:scale-110 transition-transform"></i>
+                                        <span>${member.email}</span>
+                                    </a>
+                                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 text-slate-600 border border-slate-100 font-medium text-sm">
+                                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                                        <span>Manila, Philippines</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <!-- Main Column -->
+                            <div class="lg:col-span-8 space-y-8">
+                                <!-- Bio -->
+                                <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-fadeInUp delay-100">
+                                    <div class="flex items-center gap-4 mb-6 border-b border-slate-100/80 pb-6">
+                                        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><i data-lucide="user" class="w-6 h-6"></i></div>
+                                        <div><h3 class="text-xl font-bold text-slate-800">Professional Summary</h3><p class="text-sm text-slate-400">Career Overview</p></div>
+                                    </div>
+                                    <p class="text-slate-600 leading-relaxed text-lg font-light">${member.bio}</p>
+                                </div>
+
+                                <!-- Experience -->
+                                <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-fadeInUp delay-200">
+                                    <div class="flex items-center gap-4 mb-8 border-b border-slate-100/80 pb-6">
+                                        <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl"><i data-lucide="briefcase" class="w-6 h-6"></i></div>
+                                        <div><h3 class="text-xl font-bold text-slate-800">Work Experience</h3><p class="text-sm text-slate-400">Previous Roles & Achievements</p></div>
+                                    </div>
+                                    <div class="space-y-10">
+                                        ${member.experiences.map(exp => `
+                                            <div class="relative pl-8 border-l-2 border-slate-100 last:border-0 group/exp">
+                                                <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-slate-200 group-hover/exp:border-indigo-500 transition-colors duration-300"></div>
+                                                <div class="space-y-2">
+                                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1">
+                                                        <h4 class="text-lg font-bold text-slate-800">${exp.role}</h4>
+                                                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-xs font-semibold border border-slate-100">
+                                                            <i data-lucide="calendar" class="w-3 h-3"></i><span>${exp.period}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-indigo-600 font-medium text-sm flex items-center gap-1">${exp.company} <i data-lucide="external-link" class="w-3 h-3 opacity-0 group-hover/exp:opacity-100 transition-opacity"></i></div>
+                                                    <p class="text-slate-600 mt-2 text-base leading-relaxed">${exp.description}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Side Column -->
+                            <div class="lg:col-span-4 space-y-8">
+                                <!-- Skills -->
+                                <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-fadeInUp delay-300">
+                                    <div class="flex items-center gap-4 mb-8 border-b border-slate-100/80 pb-6">
+                                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                                        <div><h3 class="text-xl font-bold text-slate-800">Skills</h3><p class="text-sm text-slate-400">Technical Proficiency</p></div>
+                                    </div>
+                                    <div class="space-y-6">
+                                        ${member.skills.map(skill => `
+                                            <div class="group/skill">
+                                                <div class="flex justify-between items-end mb-2">
+                                                    <span class="font-semibold text-slate-700 text-sm group-hover/skill:text-indigo-600 transition-colors">${skill.name}</span>
+                                                    <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md">${skill.level}%</span>
+                                                </div>
+                                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div class="h-full rounded-full transition-all duration-1000 ease-out ${getCategoryColor(skill.category)}" style="width: ${skill.level}%; animation: widthGrow 1.5s ease-out forwards"></div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <!-- Education -->
+                                <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-fadeInUp delay-300">
+                                    <div class="flex items-center gap-4 mb-8 border-b border-slate-100/80 pb-6">
+                                        <div class="p-3 bg-orange-50 text-orange-600 rounded-2xl"><i data-lucide="graduation-cap" class="w-6 h-6"></i></div>
+                                        <div><h3 class="text-xl font-bold text-slate-800">Education</h3><p class="text-sm text-slate-400">Academic Background</p></div>
+                                    </div>
+                                    <div class="space-y-6">
+                                        ${member.education.map(edu => `
+                                            <div class="relative pl-6 border-l-2 border-slate-100 group/edu">
+                                                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-slate-300 group-hover/edu:bg-orange-400 transition-colors"></div>
+                                                <h4 class="font-bold text-slate-800 text-sm">${edu.degree}</h4>
+                                                <p class="text-slate-600 text-sm font-medium mt-0.5">${edu.school}</p>
+                                                <p class="text-slate-400 text-xs mt-1 bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-100">${edu.year}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // --- HELPER RENDERERS ---
+        function renderStatCard(iconName, textClass, bgClass, label, value) {
+            return `
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+                    <div class="p-3 rounded-xl ${bgClass}">
+                        <i data-lucide="${iconName}" class="w-6 h-6 ${textClass.replace('bg-', 'text-')}"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">${label}</p>
+                        <p class="text-2xl font-black text-slate-800">${value}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSkillBar(label, percentage, colorClass) {
+            return `
+                <div>
+                    <div class="flex justify-between text-xs font-semibold mb-1.5">
+                        <span class="text-slate-700">${label}</span>
+                        <span class="text-slate-400">${percentage}%</span>
+                    </div>
+                    <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full ${colorClass}" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- ACTIONS ---
+
+        function navigateTo(view) {
+            currentState.view = view;
+            currentState.selectedMemberId = null;
+            renderSidebar();
+            if(view === 'dashboard') {
+                renderDashboard();
+            }
+            if (currentState.isMobileOpen) toggleMobileMenu();
+        }
+
+        function selectMember(id) {
+            const member = TEAM_MEMBERS.find(m => m.id === id);
+            if (member) {
+                currentState.view = 'profile';
+                currentState.selectedMemberId = id;
+                renderSidebar();
+                renderProfile(member);
+                if (currentState.isMobileOpen) toggleMobileMenu();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            const isOpen = !currentState.isMobileOpen;
+            
+            currentState.isMobileOpen = isOpen;
+            
+            if (isOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // --- INIT ---
+        document.getElementById('mobile-toggle').addEventListener('click', toggleMobileMenu);
+        
+        // Initial Render
+        renderSidebar();
+        renderDashboard();
+
+    </script>
+</body>
+</html>
