@@ -1,5 +1,5 @@
 const users = [
-      { name: "Duro. Kaith Marky", desc: "" },
+      { name: "Duro, Kaith Marky", desc: "" },
       { name: "Enguerra, Aaron C.", desc: "" },
       { name: "Marco, Tobey D.", desc: "" },
       { name: "Tenorio, Emmanuel Robert", desc: "" },
@@ -27,3 +27,4 @@ const users = [
         <p>${user.desc}</p>
       `;
     }
+
